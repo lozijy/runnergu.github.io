@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta name="keywords" content="hexo, autumn" />
+    <title>
+        机器会思考吗？
+    </title>
+    <!-- favicon -->
+     
+<link rel="stylesheet" href="../../../../css/style.css">
+
+
+    <!-- highlight -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github-gist.min.css" />
+    <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/frontendsophie/hexo-infinite-scroll@2.0.0/dist/main.js"></script>
+
+    <script>
+        infiniteScroll()
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const [
+                mainTitle,
+                mobileMenu,
+                mobileMainTitle,
+                mobileMenuBtn,
+                ipadMenuBtn,
+                aside,
+                closeBtn,
+            ] = getEle(
+                '#main-title',
+                '.mobile-menu',
+                '.mobile-menu h3',
+                '.mobile-menu button',
+                '.ipad-menu',
+                'aside',
+                'aside .close',
+            )
+            const io = new IntersectionObserver(entries => {
+                if (entries[0].intersectionRatio <= 0) {
+                    mobileMainTitle.classList.remove('invisibile')
+                } else {
+                    mobileMainTitle.classList.add('invisibile')
+                }
+            })
+            io.observe(mainTitle)
+
+            clickToggleAside(mobileMenuBtn)
+            clickToggleAside(ipadMenuBtn)
+            clickToggleAside(closeBtn, false)
+
+            const isMenuVisible = window.getComputedStyle(mobileMenu).display !== 'none'
+            if (isMenuVisible) document.body.style.background = 'none'
+
+            function getEle(...args) {
+                return args.map(arg => document.querySelector(arg))
+            }
+
+            function clickToggleAside(btn, show = true) {
+                btn.addEventListener('click', function () {
+                    if (show) {
+                        aside.style.display = 'block'
+                    } else {
+                        aside.style.display = 'none'
+                    }
+                })
+            }
+        })
+    </script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body style="background: url(https://z3.ax1x.com/2021/11/28/ou0u0H.jpg) #f3f3f3">
+    <div class="container">
+        <header class="header">
+    <nav class="mobile-menu" style="background: url(https://z3.ax1x.com/2021/11/28/ou0u0H.jpg) #f3f3f3">
+        <h3 class="invisibile">
+            <a href="../../../../index.html" class="logo">
+                机器会思考吗？
+            </a>
+        </h3>
+        <button class="menu">menu</button>
+    </nav>
+
+    <button class="ipad-menu menu">menu</button>
+
+    <h1 class="title" id="main-title">
+        <a href="../../../../index.html" class="logo">
+            机器会思考吗？
+        </a>
+    </h1>
+    <h2 class="desc">
+        Phoenix Fly.
+    </h2>
+
+    <div class="links">
+        <ul>
+            
+            <li>
+                <a href="../../../../https:/github.com/FrontendSophie">
+                    Github
+                </a>
+            </li>
+            
+            <li>
+                <a href="../../../../https:/www.linkedin.com/in/frontendsophie/">
+                    LinkedIn
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</header>
+        <main class="main">
+            <article class="post">
+    
+    
+    
+    <h2 class="post-title">
+        从内存谈谈指针
+    </h2>
+    <ul class="post-date">
+        <li>
+            2021-12-01
+        </li>
+        <li>
+            Lozijy
+        </li>
+    </ul>
+    <div class="post-content">
+        <p>#<strong>引子!</strong><br>只要是C/C++的书籍都会谈到“指针储存数值地址”我们来深挖一下这句话<br>首先是数值地址：<br>与python不同，在c++中，使用任何变量都必须先下定义：如int a,double b等等，这样做的目的实际上是让计算机分配一块地址给对应的变量从而方便我们操作<br>说起地址我们就要谈谈储存单元，单元最小的是bit,它只有两种状态,0和1（也可以是高压和低压），八个bit组成一个byte。<br>byte就很重要了，他是编码一个字符最小的可寻址单元.<br>维基百科对byte（字节）的定义如下通常用作计算机信息计量单位，不分数据类型。[1][2] 是通信和数据存储的概念。一个字节代表八个比特。从历史的观点上，“字节”表示用于编码单个字符所需要的比特数量。历史上字节长度曾基于硬件为1-48比特不等，最初通常使用6比特或9比特为一字节。今日标准以8比特作为一字节，因8为二进制整数。<br>从ASCII表中可以看到，一个byte储存的数字可以映射对应的符号,这是计算机与人交流的基础（映射），在ASCII表中：数字 32–126 分配给了能在键盘上找到的字符,当你查看或打印文档时就会出现。注:十进制32代表空格 ,十进制数字 127 代表 DELETE 命令。0–31 分配给了控制字符，用于控制打印机等外围设备（比如计算机视觉中的指令：cv2.videocapture(0)中的0就代表摄像头，127-255属于扩展ASCII打印字符，他们包括了一些数学符号,汉字等非英语字母的符号<br>换算：一个byte储存256个bit,1024个byte组成kb,1024个kb组成mb…这样循环下去.可以从这里直观理解到内存的概念<br>而电脑常说的32位，64位（现在我们一般用64位）是什么意思呢？这是说在计算机架构中，64位整数、内存地址或其他数据单元，它们最高达到64位（8字节）宽，这样在处理多媒体内容（指文本，图像，声音混合的媒体）时有更加的性能。</p>
+<p>#<strong>回到指针这个话题!</strong><br>在定义一个变量时，计算机为其在茫茫大海中分了一小块地方，成了它的私人空间，但作为操作者的我们如何准确找到它？这就是指针的意义所在了<br>指针怎么用？定义+赋值+取值<br>定义：我们要怎样区别指针和其他变量来告诉计算机：”这是个指针！”呢？简单，直接在指针名前面加上一个特殊的* 如int <em>a<br>赋值：通过符号&amp;来完成： a=&amp;b ,这样就把b的地址赋给了a<br>取值：现在的a代表b的地址，我们又可以通过符号</em>来把b的地址中存在的b给取出来,如*a</p>
+<p>有人可能会说:你是猪吗？我直接不要a，想要b的地址就写&amp;b,想要b的值就直接写b不就行了吗？<br>我的回答是:你错了，从一个例子来看一下：<br>定义这样一个函数:<br>void swap(a,b)<br>{<br>    int tempt;<br>    tempt=a;<br>    a=b;<br>    b=tempt;<br>    cout&lt;&lt;a&lt;&lt;” “&lt;&lt;v&lt;&lt;”\n”;<br>}<br>看似一顿操作猛如虎，其实我们将它放入主函数中<br>int main(){<br>    int x=1;<br>    int y=2;<br>    swap(x,y);<br>    cout&lt;&lt;x&lt;&lt;” “&lt;&lt;y&lt;&lt;”\n”;</p>
+<p>}<br>发现输出为2,1;1,2<br>这是为什么呢？这就涉及到了形参与实参的概念：<br>形参(parameter)： 全称为”形式参数” 由于它不是实际存在变量，所以又称虚拟变量。 是在定义函数名和函数体的时候使用的参数,目的是用来接收调用该函数时传入的参数. 在调用函数时，实参将赋值给形参。<br>在上面的例子中，在main()里面，swap()函数中的形参a,b直接把x,y的值拷贝了过来并进行了交换，但是对于x,y并没有实际的影响，这就是不用指针的下场！</p>
+<p>现在我们改用指针来做：<br>void swap(*a,*b)<br>{<br>    int tempt;<br>    tempt=*a<br>    *a=*b;<br>    *b=tempt;<br>    cout&lt;&lt;*a&lt;&lt;” “&lt;&lt;*b&lt;&lt;”\n”;<br>int main(){<br>    int x=1;<br>    int y=2;<br>    swap(&amp;x,&amp;y); //注意，这里把x,y的地址赋给形参，而不是把x,y赋给形参<br>    cout&lt;&lt;x&lt;&lt;” “&lt;&lt;y&lt;&lt;”\n”;</p>
+<p>}<br>输出结果：2，1；2，1<br>下午接着写，睡觉le 
+    </p>
+
+    </div>
+</article>
+        </main>
+        <aside class="aside">
+            <div class="close"></div>
+            <section class="aside-section">
+                
+    <h1>Categories</h1>
+
+    
+
+            </section>
+            <section class="aside-section">
+                
+    <h1>Archives</h1>
+
+    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="../../../../archives/2021/">2021</a></li></ul>
+
+
+            </section>
+            <section class="aside-section tag">
+                
+    <h1>Tags</h1>
+
+    
+
+            </section>
+        </aside>
+    </div>
+</body>
+
+</html>
